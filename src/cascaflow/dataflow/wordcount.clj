@@ -41,18 +41,17 @@
             (setCoder string-coder))))))
 
 (defn run!
-  "Execute "
-  [args]
+  [input output args]
   (let [pipeline (-> (->> args (into-array String) PipelineOptionsFactory/fromArgs)
                      (.withValidation)
                      (.as PipelineOptions)
                      (Pipeline/create))]
     (.. pipeline
-        (apply (.from (TextIO$Read/named "ReadLines") "/tmp/othello.txt"))
+        (apply (.from (TextIO$Read/named "ReadLines") input))
         (apply (word-count))
-        (apply (.to (TextIO$Write/named "WriteLines") "/tmp/out.txt")))
+        (apply (.to (TextIO$Write/named "WriteLines") output)))
     (.run pipeline)))
 
 (defn -main
-  []
-  (run! []))
+  [input output & args]
+  (run! input output args))
